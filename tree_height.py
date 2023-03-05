@@ -29,19 +29,25 @@ def compute_height(n, parents):
     return max_height
 
 def main():
-    try:
-        # try reading from file
-        with open("input.txt", "r") as f:
-            inputs = f.readline().strip().split()
-    except FileNotFoundError:
-        # if file not found, read from standard input
+    if len(sys.argv) > 1:
+        try:
+            with open(sys.argv[1]) as f:
+                inputs = f.readline().strip().split()
+        except FileNotFoundError:
+            print("Error: file not found")
+            return
+    else:
         inputs = input().strip().split()
 
-    n = int(inputs[0])
-    parents = list(map(int, inputs[1:]))
+    try:
+        n = int(inputs[0])
+        parents = list(map(int, inputs[1:]))
+    except ValueError:
+        print("Error: invalid input format")
+        return
 
-    max_height = compute_height(n, parents)
-    print(max_height)
+    print(compute_height(n, parents))
+
 
 
 # In Python, the default limit on recursion depth is rather low,
