@@ -4,44 +4,48 @@ import sys
 import threading
 import numpy
 
-
 def compute_height(n, parents):
-
-    nodes = [[] for i in range(n)]
-    
-    for i, parent in enumerate(parents):
-        if parent == -1:
-            root = i
-        else:
-            nodes[parent].append(i)
-    
-
-    def compute_height_rec(node):
-        if not nodes[node]:
-            return 1
-        heights = [compute_height_rec(child) for child in nodes[node]]
-        return 1 + max(heights)
-    
-
-    return compute_height_rec(root)
-
+    max_height = 0
+    heights = [0] * n
+    for vertex in range(n):
+        if heights[vertex] != 0:
+            continue
+        height = 0
+        i = vertex
+        while i != -1:
+            if heights[i] != 0:
+                height += heights[i]
+                break
+            height += 1
+            i = parents[i]
+        max_height = max(max_height, height)
+        i = vertex
+        while i != -1:
+            if heights[i] != 0:
+                break
+            heights[i] = height
+            height -= 1
+            i = parents[i]
+    return max_height
 
 def main():
-
-        filename = input("Enter filename: ")
-        if 'a' in filename.lower():
-            print("Error: File name cannot contain the letter 'a'.")
+    if len(sys.argv) == 1:
+        n = int(input())
+        parents = numpy.fromstring(input(), sep=' ', dtype=int)
+    elif len(sys.argv) == 2:
+        filename = sys.argv[1]
+        if 'a' in filename:
+            print("Error: filename contains 'a'")
             return
-        try:
-            with open(f"input_files/{filename}", 'r') as f:
-                n = int(f.readline())
-                parents = numpy.fromstring(f.readline().strip(), sep=' ', dtype=int)
-        except:
-            print("Error: Invalid file name or format.")
-            return
-
-        print(compute_height(n, parents))
-
+        with open(filename, 'r') as f:
+            n = int(f.readline())
+            parents = numpy.fromstring(f.readline(), sep=' ', dtype=int)
+    else:
+        print("Usage: python3 tree_height.py [filename]")
+        return
+    
+    height = compute_height(n, parents)
+    print(height)
 
 # In Python, the default limit on recursion depth is rather low,
 # so raise it here for this problem. Note that to take advantage
