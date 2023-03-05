@@ -5,50 +5,28 @@ import threading
 import numpy
 
 def compute_height(n, parents):
-    max_height = 0
-    heights = [0] * n
-    for vertex in range(n):
-        if heights[vertex] != 0:
-            continue
-        height = 0
-        i = vertex
-        while i != -1:
-            if heights[i] != 0:
-                height += heights[i]
-                break
-            height += 1
-            i = parents[i]
-        max_height = max(max_height, height)
-        i = vertex
-        while i != -1:
-            if heights[i] != 0:
-                break
-            heights[i] = height
-            height -= 1
-            i = parents[i]
-    return max_height
+    nodes = [[] for _ in range(n)]
+    for i in range(n):
+        if parents[i] == -1:
+            root = i
+        else:
+            nodes[parents[i]].append(i)
+    
+    def compute_subtree_height(node):
+        if not nodes[node]:
+            return 1
+        subtree_heights = [compute_subtree_height(child) for child in nodes[node]]
+        return 1 + max(subtree_heights)
+
+    return compute_subtree_height(root)
 
 def main():
-    if len(sys.argv) > 1:
-        try:
-            with open(sys.argv[1]) as f:
-                inputs = f.readline().strip().split()
-        except FileNotFoundError:
-            print("Error: file not found")
-            return
-    else:
-        inputs = input().strip().split()
+    n = int(input().strip())
 
-    try:
-        n = int(inputs[0])
-        parents = list(map(int, inputs[1:]))
-    except ValueError:
-        print("Error: invalid input format")
-        return
+    parents = numpy.array(list(map(int, input().strip().split())))
 
+    # call the function and output it's result
     print(compute_height(n, parents))
-
-
 
 # In Python, the default limit on recursion depth is rather low,
 # so raise it here for this problem. Note that to take advantage
