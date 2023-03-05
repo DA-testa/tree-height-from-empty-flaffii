@@ -5,27 +5,32 @@ import threading
 import numpy
 
 def compute_height(n, parents):
-    nodes = [[] for _ in range(n)]
+    tree = [[] for _ in range(n)]
+
     for i in range(n):
         if parents[i] == -1:
             root = i
         else:
-            nodes[parents[i]].append(i)
-    
-    def compute_subtree_height(node):
-        if not nodes[node]:
-            return 1
-        subtree_heights = [compute_subtree_height(child) for child in nodes[node]]
-        return 1 + max(subtree_heights)
+            tree[parents[i]].append(i)
 
-    return compute_subtree_height(root)
+    def calculate_height(node):
+        heights = []
+        for child in tree[node]:
+            heights.append(calculate_height(child))
+        if not heights:
+            return 1
+        return 1 + max(heights)
+
+    max_height = calculate_height(root)
+
+    return max_height
 
 def main():
-    n = int(input().strip())
+    n = int(input())
 
-    parents = numpy.array(list(map(int, input().strip().split())))
+    parents_str = input()
+    parents = list(map(int, parents_str.split()))
 
-    # call the function and output it's result
     print(compute_height(n, parents))
 
 # In Python, the default limit on recursion depth is rather low,
@@ -34,3 +39,5 @@ def main():
 sys.setrecursionlimit(10**7)  # max depth of recursion
 threading.stack_size(2**27)   # new thread will get stack of such size
 threading.Thread(target=main).start()
+main()
+
