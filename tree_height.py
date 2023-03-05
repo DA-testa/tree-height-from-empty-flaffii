@@ -5,23 +5,31 @@ import threading
 import numpy as np
 
 
-def compute_height(n, parents):
-    adj_list = [[] for _ in range(n)]
+def compute_max_height(num_nodes, parents_list):
+    children = {i: [] for i in range(num_nodes)}
 
-    # Populate the adjacency list
-    for i, parent in enumerate(parents):
-        if parent != -1:
-            adj_list[parent].append(i)
+    root_nodes = []
+    for i, parent in enumerate(parents_list):
+        if parent == -1:
+            root_nodes.append(i)
+        else:
+            children[parent].append(i)
 
-    def compute_node_height(node):
-        if not adj_list[node]:
-            return 0
+    def find_max_depth(node, depth):
+        if not children[node]:
+            return depth
+        else:
+            max_depth = 0
+            for child in children[node]:
+                child_depth = find_max_depth(child, depth+1)
+                max_depth = max(max_depth, child_depth)
+            return max_depth
 
-        child_heights = [compute_node_height(child) for child in adj_list[node]]
-
-        return max(child_heights) + 1
-
-    return max(compute_node_height(root) for root in range(n) if parents[root] == -1)
+    max_height = 0
+    for root in root_nodes:
+        height = find_max_depth(root, 0)
+        max_height = max(max_height, height)
+    return max_height + 1
 
 
 def main():
@@ -44,5 +52,4 @@ def main():
 sys.setrecursionlimit(10**7)  # max depth of recursion
 threading.stack_size(2**27)   # new thread will get stack of such size
 threading.Thread(target=main).start()
-
 
