@@ -29,23 +29,20 @@ def compute_height(n, parents):
     return max_height
 
 def main():
-    if len(sys.argv) == 1:
-        n = int(input())
-        parents = numpy.fromstring(input(), sep=' ', dtype=int)
-    elif len(sys.argv) == 2:
-        filename = sys.argv[1]
-        if 'a' in filename:
-            print("Error: filename contains 'a'")
-            return
-        with open(filename, 'r') as f:
-            n = int(f.readline())
-            parents = numpy.fromstring(f.readline(), sep=' ', dtype=int)
-    else:
-        print("Usage: python3 tree_height.py [filename]")
-        return
-    
-    height = compute_height(n, parents)
-    print(height)
+    try:
+        # try reading from file
+        with open("input.txt", "r") as f:
+            inputs = f.readline().strip().split()
+    except FileNotFoundError:
+        # if file not found, read from standard input
+        inputs = input().strip().split()
+
+    n = int(inputs[0])
+    parents = list(map(int, inputs[1:]))
+
+    max_height = compute_height(n, parents)
+    print(max_height)
+
 
 # In Python, the default limit on recursion depth is rather low,
 # so raise it here for this problem. Note that to take advantage
