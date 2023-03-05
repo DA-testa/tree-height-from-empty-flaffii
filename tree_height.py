@@ -37,7 +37,7 @@ def main():
     if letter == 'I':
         n = int(input().strip())
         parents = list(map(int, input().split()))
-        print(compute_height(n, parents))
+        print(compute_max_height(n, parents))
     elif letter == 'F':
         file = input().strip()
         file = "test/" + file
