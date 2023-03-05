@@ -40,7 +40,7 @@ def main():
             print("Error: Invalid file name or format.")
             return
 
-    print(compute_height(n, parents))
+        print(compute_height(n, parents))
 
 
 # In Python, the default limit on recursion depth is rather low,
