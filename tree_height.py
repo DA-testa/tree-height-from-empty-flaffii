@@ -33,9 +33,17 @@ def compute_max_height(num_nodes, parents_list):
 
 
 def main():
-    num_nodes = int(input())
-    parents_list = list(map(int, input().split()))
-    print(compute_max_height(num_nodes, parents_list))
+    letter = input().strip()
+    if letter == 'I':
+        n = int(input().strip())
+        parents = list(map(int, input().split()))
+        print(compute_height(n, parents))
+    elif letter == 'F':
+        file = input().strip()
+        file = "test/" + file
+        if 'a' not in file:
+            with open(file, 'r') as f:
+                print(f.read())
 
 
 # In Python, the default limit on recursion depth is rather low,
